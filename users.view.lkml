@@ -86,4 +86,11 @@ view: users {
     type: count
     drill_fields: [id, first_name, last_name, events.count, order_items.count]
   }
+
+  dimension: full_name {
+    type:  string
+    sql:(( ${TABLE}.first_name || ' ') || ${TABLE}.last_name) ;;
+  }
+
+
 }
