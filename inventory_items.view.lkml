@@ -85,4 +85,37 @@ view: inventory_items {
     type: count
     drill_fields: [id, product_name, products.id, products.name, order_items.count]
   }
+
+  measure: count_sold {
+    type:  sum
+    sql:  CASE WHEN ${TABLE}.sold_at IS NOT NULL THEN 1 ELSE 0 END ;;
+  }
+
+  measure: count_in_stock {
+    type: sum
+    sql:  CASE WHEN ${TABLE}.sold_at IS NULL THEN 1 ELSE 0 END  ;;
+    }
+
+  measure: percent_sold {
+    type: number
+    sql:  100.0 * ${count_sold} / NULLIF(${count}, 0) ;;
+    value_format: "0.00"
+  }
+
+  measure: percent_in_stock {
+    type:  number
+    sql: 100.0 * ${count_in_stock} / NULLIF(${count}, 0) ;;
+    value_format: "0.00"
+  }
+
+  dimension: time_to_sell {
+    type: number
+    sql: datediff(hour, ${TABLE}.created_at, ${TABLE}.sold_at) ;;
+  }
+
+  measure: average_time_to_sell {
+    type: median
+    sql:  ${time_to_sell} ;;
+  }
+
 }

@@ -68,6 +68,7 @@ view: users {
   }
 
   dimension: state {
+    map_layer_name: us_states
     type: string
     sql: ${TABLE}.state ;;
   }
@@ -92,5 +93,8 @@ view: users {
     sql:(( ${TABLE}.first_name || ' ') || ${TABLE}.last_name) ;;
   }
 
-
+  measure: avg_age {
+    type:  average
+    sql:  ${age} ;;
+  }
 }
