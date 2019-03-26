@@ -26,39 +26,39 @@ view: cohort_selector {
   }
 }
 
-explore: cohort_selector {}
 
-include: "*.view"
-
-explore: products2 {
-  from: products
-  join: cohort_selector {
-    type: inner
-    sql_on: ${order_items.user_id} = ${cohort_selector.user_id} ;;
-  }
-
-  hidden:  no
-  join: inventory_items {
-    type:  left_outer
-    sql_on:  ${inventory_items.product_id} = ${products2.id} ;;
-    relationship: one_to_one
-  }
-
-  join: distribution_centers {
-    type:  left_outer
-    sql_on:  ${inventory_items.product_distribution_center_id} = ${distribution_centers.id} ;;
-    relationship:  one_to_one
-  }
-
-  join: order_items {
-    type:  left_outer
-    sql_on: ${inventory_items.id} = ${order_items.inventory_item_id} ;;
-    relationship: one_to_one
-  }
-
-  join: users {
-    type:  left_outer
-    sql_on:  ${users.id} = ${order_items.user_id} ;;
-    relationship: one_to_one
-  }
-}
+#include: "*.view"
+#
+#explore: products2 {
+#  from: products
+#  join: cohort_selector {
+#    type: inner
+#    sql_on: ${order_items.user_id} = ${cohort_selector.user_id} ;;
+#  }
+#
+#  hidden:  no
+#  join: inventory_items {
+#    type:  left_outer
+#    sql_on:  ${inventory_items.product_id} = ${products2.id} ;;
+#    relationship: one_to_one
+#  }
+#
+#  join: distribution_centers {
+#    type:  left_outer
+#    sql_on:  ${inventory_items.product_distribution_center_id} = ${distribution_centers.id} ;;
+#    relationship:  one_to_one
+#  }
+#
+#  join: order_items {
+#    type:  left_outer
+#    sql_on: ${inventory_items.id} = ${order_items.inventory_item_id} ;;
+#    relationship: one_to_one
+#  }
+#
+#  join: users {
+#    type:  left_outer
+#    sql_on:  ${users.id} = ${order_items.user_id} ;;
+#    relationship: one_to_one
+#  }
+#}
+#
