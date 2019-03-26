@@ -239,6 +239,7 @@ view: user_facts_table {
     type: average
     value_format_name: usd
     sql: ${lifetime_revenue} ;;
+    drill_fields: [users.detail*]
   }
 
   measure: total_lifetime_revenue {
@@ -246,6 +247,8 @@ view: user_facts_table {
     type: sum
     value_format_name: usd
     sql: ${lifetime_revenue} ;;
+
+    drill_fields: [users.detail*]
   }
 
   ## Gross Revenue
@@ -254,6 +257,8 @@ view: user_facts_table {
     type: number
     value_format_name: usd
     sql: ${TABLE}.lifetime_gross_revenue ;;
+
+    drill_fields: [users.detail*]
   }
 
   measure: average_lifetime_gross_revenue {
@@ -261,6 +266,7 @@ view: user_facts_table {
     type: average
     value_format_name: usd
     sql: ${lifetime_gross_revenue} ;;
+    drill_fields: [users.detail*]
   }
 
   measure: total_lifetime_gross_revenue {

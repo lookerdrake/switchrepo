@@ -114,7 +114,7 @@ view: dt_user_purchase_activity {
 
   measure: spend_per_active_user {
     type: number
-    value_format_name: usd
+    value_format_name: usd_0
     sql: ${total_amount_spent} / nullif(${total_active_users},0) ;;
     drill_fields: [user_id, total_amount_spent]
   }

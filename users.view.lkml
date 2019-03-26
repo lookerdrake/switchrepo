@@ -1,6 +1,30 @@
 view: users {
   sql_table_name: public.users ;;
 
+  parameter: metric_selector {
+    type: unquoted
+    allowed_value: {
+      label: "Youngest Age"
+      value: "MIN"
+    }
+    allowed_value: {
+      label: "Oldest Age"
+      value: "MAX"
+    }
+    allowed_value: {
+      label: "Median Age"
+      value: "MEDIAN"
+    }
+  }
+
+  measure: metric_choser {
+    type: number
+    value_format_name: percent_2
+    sql:
+      {% parameter metric_selector %}(${age})
+      ;;
+  }
+
   dimension: id {
     hidden: yes
     primary_key: yes
@@ -8,16 +32,46 @@ view: users {
     sql: ${TABLE}.id ;;
   }
 
+  dimension: user_attribute_test {
+    type: string
+    sql: {{ _user_attributes['user_country'] }} ;;
+  }
+
+
   dimension: age {
     group_label: "User Demographics"
     type: number
     sql: ${TABLE}.age ;;
   }
 
-  dimension: city {
+  dimension: str_a {
     group_label: "User Location"
     type: string
     sql: ${TABLE}.city ;;
+  }
+
+  parameter: string_checker {
+    default_value: "foo"
+  }
+
+  dimension: str_b {
+    sql: 'foo' ;;
+  }
+
+  dimension: comparision_a_B {
+    sql: CASE WHEN ${str_a} IN ${str_b} ;;
+  }
+
+
+
+  parameter: target_goal {
+    type: number
+  }
+
+  measure: pct_to_goal {
+    type: number
+    value_format_name: percent_2
+    sql: 1.0*${count} / NULLIF({% parameter target_goal %}, 0) ;;
   }
 
   dimension: country {
@@ -26,6 +80,8 @@ view: users {
     map_layer_name: countries
     sql: ${TABLE}.country ;;
   }
+
+
 
   dimension_group: created {
     type: time
@@ -76,12 +132,12 @@ view: users {
     sql: ${TABLE}.longitude ;;
   }
 
-  dimension: state {
-    group_label: "User Location"
-    map_layer_name: us_states
-    type: string
-    sql: ${TABLE}.state ;;
-  }
+  #dimension: state {
+  #  group_label: "User Location"
+  #  map_layer_name: us_states
+  #  type: string
+  #  sql: ${TABLE}.state ;;
+  #}
 
   dimension: traffic_source {
     type: string
@@ -123,6 +179,7 @@ view: users {
     type: yesno
     sql: CASE WHEN ${created_date} >= DATE_ADD('day', -90, GETDATE()) THEN TRUE ELSE FALSE END ;;
   }
+
 ##################################################
 ######       Measures relating to Age      #######
 ##################################################
@@ -152,7 +209,7 @@ view: users {
     group_label: "Age Measures"
     label: "Youngest User"
     description: "Age of the youngest user who purchased an item"
-    type:  max
+    type:  min
     sql:  ${age} ;;
   }
 
@@ -174,8 +231,20 @@ view: users {
     sql: CASE
       WHEN extract(month from ${created_raw}) = extract(month from GETDATE()) AND extract(year from ${created_raw}) = extract(year from GETDATE())
         THEN ${id}
-      WHEN extract(day from ${created_raw}) <= extract(day from GETDATE()) THEN ${id}
       ELSE NULL
       END ;;
     }
+
+  measure: total_users_QTD  {
+    label: "New Users Quarter-to-Date"
+    type: count_distinct
+    ## When the Month+Year = Current Timestamp, then count all users
+    ## Else, only count users who were created before this day of month
+    sql: CASE
+      WHEN extract(quarter from ${created_raw}) = extract(quarter from GETDATE()) AND extract(year from ${created_raw}) = extract(year from GETDATE())
+        THEN ${id}
+      ELSE NULL
+      END ;;
+  }
+
 }
