@@ -37,7 +37,3 @@ view: customer_facts {
     type: string
   }
 }
-
-explore: customer_facts {
-  from: customer_facts
-}
